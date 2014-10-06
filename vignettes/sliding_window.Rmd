@@ -1,0 +1,125 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Getting started}
+-->
+
+```{r, echo = FALSE, message = FALSE}
+set.seed(26)
+knitr::opts_chunk$set(
+  comment = "#>",
+  error = FALSE,
+  tidy = FALSE,
+  fig.width = 12,
+  fig.height = 6)
+ggplot2::theme_set(ggplot2::theme_bw())
+```
+
+
+# Sliding window in REPRA
+
+The sliding window mechanism included in REPRA allows to investigate the effect of variable generation (VG) on resource adequacy. This vignette presents a graphical example of how that mechanism works. For more details on the parameters available, consult the help entry for the function with `?sliding_window`.
+
+The way the sliding window work is very simple: for any given point in time, it captures VG output for adjacent time steps. That way, instead of having a single data point, we can create distributions that are still correlated to the original data. This facilitates sensitivity analysis on the VG time series.
+
+To show how it work, we first load a couple packages into memory.
+
+```{r, message = FALSE}
+library(repra)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+```
+
+
+## Data
+
+The sliding window operation takes a data frame that has been previously formatted with the `format_timedata` function. In this example, we will use the data provided with the package for the Rocky Mountain Power Authority region. For simplicity, we will only show load and wind data.
+
+```{r}
+tdata <- repratime %>%
+  filter(Area == "RMPA") %>%
+  select(Area, Time, Load, Wind)
+td <- format_timedata(tdata)
+head(td)
+```
+
+To facilitate visualization, we "melt" the data from wide to long format. For instance, here is the load and wind time series for day 10.
+
+```{r}
+td.wide <- melt(td, 1:5, variable.name = "Type")
+p <- ggplot(td.wide %>% filter(Day == 10), aes(x = Time, y = value, color = Type)) +
+  geom_line() +
+  labs(x = "Hour", y = "Power (MW)") +
+  expand_limits(y = 0)
+p
+```
+
+## Sliding window for adjacent hours
+
+For the first example of the sliding window, we set `win.h.size = c(-1, 1)`. This means that the sliding window is composed of the current time step, the previous one and the next one. By default, each hour is weighted with the same probability (shown as `WinProb` in the table). Custom weights can be provided with the `win.h.weight` parameter. This is what the data looks like after applying the sliding window function for the tenth day.
+
+```{r}
+td.3h <- td %>% sliding_window(win.h.size = c(-1, 1))
+td.3h %>% filter(Day == 10) %>% arrange(Time) %>% head
+```
+
+We can visualize this data on top of the previous plot (as black dots). As the graph shows, the load data is not modified, but the wind series show three point for each time step.
+
+```{r}
+td.3h.wide <- melt(td.3h, 1:5, variable.name = "Type")
+p + geom_point(data = td.3h.wide %>% filter(Day == 10), color = "black")
+```
+
+The following plot focuses on the wind time series. The orignal data set is represented by the line and the data resulting from the sliding window is shown as dots. It is easy to see how each time retains the original power value (shown on top of the line) and the adjacent values.
+
+```{r}
+ggplot(td %>% filter(Day == 10), aes(x = Time, y = Wind)) +
+  geom_line(color = "blue") +
+  geom_point(data = td.3h %>% filter(Day == 10), color = "black", size = 2) +
+  labs(x = "Hour", y = "Power (MW)") +
+  expand_limits(y = 0)
+```
+
+The window size can be expanded. The following example uses the central and the four adjacent hours (2 before and 2 after).
+
+```{r}
+td.5h <- td %>% sliding_window(win.h.size = c(-2, 2))
+ggplot(td %>% filter(Day == 10), aes(x = Time, y = Wind)) +
+  geom_point(color = "blue", size = 3) +
+  geom_line(color = "blue") +
+  geom_point(data = td.5h %>% filter(Day == 10), color = "black", size = 2) +
+  labs(x = "Hour", y = "Power (MW)") +
+  expand_limits(y = 0)
+```
+
+
+## Sliding window for adjacent days
+
+The `sliding_window` function also allows to include data from adjacent days by using the `win.d.size` parameter. The following example modifies the wind data series to include the current hour and same hour in the previous and next days, i.e., by shifting the data forward and backwards by 24 hours. In this case the distributions are much more wide than in the previous subsection. This is generally to be expected, unless there are very strong daily patterns.
+
+```{r}
+td.3d <- td %>% sliding_window(win.d.size = c(-1, 1))
+ggplot(td %>% filter(Day == 10), aes(x = Time, y = Wind)) +
+  geom_point(color = "blue", size = 3) +
+  geom_line(color = "blue") +
+  geom_point(data = td.3d %>% filter(Day == 10), color = "black", size = 2) +
+  labs(x = "Hour", y = "Power (MW)") +
+  expand_limits(y = 0)
+```
+
+
+## Sliding window for adjacent hours and days
+
+Finally, we can combine the two capabilities and pull data from adjacent days and adjacent hours. The following example creates distributions with 9 data points for each time step: 3 hours (current, 1 before and 1 after) for each one of the 3 days (current, 1 before and 1 after).
+
+```{r}
+td.3h.3d <- td %>% sliding_window(win.h.size = c(-1, 1), win.d.size = c(-1, 1))
+ggplot(td %>% filter(Day == 10), aes(x = Time, y = Wind)) +
+  geom_point(color = "blue", size = 3) +
+  geom_line(color = "blue") +
+  geom_point(data = td.3h.3d %>% filter(Day == 10), color = "black", size = 2) +
+  labs(x = "Hour", y = "Power (MW)") +
+  expand_limits(y = 0)
+```
+
+More reseach will be performed in the use of this capability and its effect in the estimation of resource adequacy levels and capacity value calculations.
