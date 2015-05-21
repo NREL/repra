@@ -69,10 +69,15 @@ calculate_metrics_area <- function(time.data, outage.table, raw = FALSE) {
   # Convert time.data into a new data.table and sort by Level, Area and NetLoad
   time.data.dt <- data.table(time.data, key = "Level,Area,NetLoad")
   
-  # Perform the lookup of time.data on the outage table (and summarize if appropriate)
+  # Perform the lookup of time.data on the outage table
   out <- outage.table[time.data.dt, roll = TRUE]
-  out <- na.omit(out)
+  out[is.na(Capacity2), Capacity2 := 0]
+  out[is.na(Prob), Prob := 0]
+  out[is.na(LOLP), LOLP := 0]
+  out[is.na(BaseEUE), BaseEUE := 0]
   out[, EUE := BaseEUE + LOLP * (Capacity - Capacity2)]
+  
+  # Summarize results if requested
   if (!raw) {
     # Aggregate up to the hour first (in case there is a sliding window)
     out <- out[, list(LOLP = sum(LOLP * WinProb, na.rm = TRUE),
