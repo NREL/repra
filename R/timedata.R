@@ -108,7 +108,7 @@ format_timedata <- function(data, levels = NULL, scenario = NULL, day.steps = 24
   
   # Make levels of aggregation into rows
   data3 <- melt(data2, c(scenario, "Time", "Type", "Value"), variable.name = "Level", value.name = "Area")
-  data3$Area <- factor(data3$Area)
+  data3$Area <- as.character(data3$Area)
   
   # Sum across levels of aggregation
   cols.temp <- paste(c(scenario, "Level", "Area", "Time", "Type"), collapse = ",")
