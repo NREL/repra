@@ -70,7 +70,11 @@ format_timedata <- function(data, levels = NULL, scenario = NULL, day.steps = 24
     assert_that(data %has_name% i)
   for (i in c("Level", "VG", "NetLoad", "WinProb"))
     assert_that(data %>% has_no_name(i))
+  
   assert_that(is.numeric(data$Load))
+  if (any(is.na(data$Load)))
+    stop("NA value found in column 'Load'", call. = FALSE)
+  
   if (!is.null(levels)) {
     assert_that(is.data.frame(levels))
     assert_that(data %has_name% "Area")
@@ -87,10 +91,17 @@ format_timedata <- function(data, levels = NULL, scenario = NULL, day.steps = 24
   assert_that(is.number(day.steps))
   assert_that(data %>% rows_multiple_of(day.steps))
   
-  # Separate list of VG columns and check that they are numeric
+  # Separate list of VG columns and check that they are numeric and that no NA's are present
   VG.cols <- setdiff(names(data), c("Time", "Area", "Load", scenario))
-  for (i in VG.cols)
-    assert_that(is_VG_numeric(data, i))
+  for (i in VG.cols) {
+    if (!inherits(data[[i]], "numeric"))
+      stop("Column '", i, "' in data is not numeric.\n",
+           "HINT: If the column is a scenario column, use 'scenario'. Otherwise, remove it.",
+           call. = FALSE)
+    
+    if (any(is.na(data[[i]])))
+      stop("NA value found in column '", i, "'", call. = FALSE)
+  }
   
   # Time data doesn't have Area column, add it
   if (!"Area" %in% names(data))
