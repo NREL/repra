@@ -226,3 +226,5 @@ pip-log.txt
 *.Rproj
 
 *.so
+
+.Rhistory
