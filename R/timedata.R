@@ -12,7 +12,7 @@
 #'   \item{The number of entries needs to be a multiple of \code{day.steps}}
 #'   \item{A \code{Time} column that can be ordered (integer or time stamps)}
 #'   \item{A \code{Load} column with load time series}
-#'   \item{No column named \code{Level}, \code{NetLoad} or \code{VG} (they are reserved name)}
+#'   \item{No column named \code{Level}, \code{NetLoad}, \code{VG}, \code{WinProb} or \code{Multiplier} (they are reserved name)}
 #'   \item{Optionally, if a column called \code{Area} exists, it will be used to separate areas}
 #'   \item{All columns must contain numbers except for \code{Time}, \code{Area} and those in \code{scenario}}
 #' }
@@ -68,7 +68,7 @@ format_timedata <- function(data, levels = NULL, scenario = NULL, day.steps = 24
   # Check inputs
   for (i in c("Time", "Load"))
     assert_that(data %has_name% i)
-  for (i in c("Level", "VG", "NetLoad", "WinProb"))
+  for (i in c("Level", "VG", "NetLoad", "WinProb", "Multiplier"))
     assert_that(data %>% has_no_name(i))
   
   assert_that(is.numeric(data$Load))
