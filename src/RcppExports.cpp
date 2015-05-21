@@ -9,16 +9,12 @@ using namespace Rcpp;
 DataFrame convolution_table(NumericVector capacity, NumericVector efor, double threshold);
 RcppExport SEXP repra_convolution_table(SEXP capacitySEXP, SEXP eforSEXP, SEXP thresholdSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< NumericVector >::type capacity(capacitySEXP );
-        Rcpp::traits::input_parameter< NumericVector >::type efor(eforSEXP );
-        Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP );
-        DataFrame __result = convolution_table(capacity, efor, threshold);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type capacity(capacitySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type efor(eforSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    __result = Rcpp::wrap(convolution_table(capacity, efor, threshold));
+    return __result;
 END_RCPP
 }

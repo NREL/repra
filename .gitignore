@@ -224,3 +224,5 @@ pip-log.txt
 .Rproj.user
 
 *.Rproj
+
+*.so
