@@ -1,4 +1,6 @@
-# repra 0.4.2.99
+# repra 0.4.3
+
+* Minor revision to the description to update package maintainer.
 
 
 # repra 0.4.2
