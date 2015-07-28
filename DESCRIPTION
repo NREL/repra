@@ -1,13 +1,13 @@
 Package: repra
 Title: Renewable Energy Probability Resource Assessment Tool (REPRA)
-Version: 0.4.3
-Date: 2014-09-30
+Version: 0.4.4
+Date: 2015-07-27
 Authors@R: c(
     person("Eduardo", "Ibanez", , "edu.ibanez@gmail.com", c("aut", "cre")),
     person("National Renewable Energy Laboratory", role = "cph")
     )
-Description: This package includes methods to calculate resource adequacy
-    metrics in power systems. These methods are based in the notion of
+Description: Methods to calculate resource adequacy
+    metrics in power systems, which are based on the notion of
     loss-of-load probability (LOLP) and include the treatment of conventional
     and variable renewable generators.
 License: MIT + file LICENSE

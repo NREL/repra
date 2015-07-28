@@ -37,6 +37,7 @@
 #' @seealso \code{\link{sliding_window}} is used internally by several functions to extend
 #'          time data objects
 #'
+#' @importFrom stats as.formula
 #' @export
 #'
 #' @examples

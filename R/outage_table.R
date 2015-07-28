@@ -48,6 +48,7 @@
 #'
 #' @references R. Billinton, and R. N. Allan, Reliability evaluation of power systems,
 #'     New York: Plenum Press 1996.
+#' @importFrom stats weighted.mean
 #' @export
 #' @useDynLib repra
 #'

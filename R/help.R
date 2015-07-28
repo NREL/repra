@@ -49,5 +49,5 @@ NULL
 #' @aliases repradata repra-data repraareas repragen repratime repracapacity
 #' @references Western Electricity Coordinating Council (2014). Transmission Expansion
 #'   Planning Policy Committee (TEPPC) 2024 Common Case (version 1.0). 
-#'   \url{http://www.wecc.biz/committees/BOD/TEPPC/Pages/TAS_Datasets.aspx}.
+#'   \url{https://www.wecc.biz/TransmissionExpansionPlanning/Pages/Datasets.aspx}.
 NULL

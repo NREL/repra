@@ -37,7 +37,7 @@ useful to normalize capacity value, for example).
 \references{
 Western Electricity Coordinating Council (2014). Transmission Expansion
   Planning Policy Committee (TEPPC) 2024 Common Case (version 1.0).
-  \url{http://www.wecc.biz/committees/BOD/TEPPC/Pages/TAS_Datasets.aspx}.
+  \url{https://www.wecc.biz/TransmissionExpansionPlanning/Pages/Datasets.aspx}.
 }
 \keyword{datasets}
 

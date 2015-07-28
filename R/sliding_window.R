@@ -84,6 +84,7 @@
 #' @seealso \code{\link{format_timedata}} to create the \code{time.data} object
 #' @seealso This function is called from \code{\link{calculate_metrics}} and \code{\link{calculate_elcc}}
 #'
+#' @importFrom stats as.formula na.omit
 #' @export
 #'
 #' @examples
